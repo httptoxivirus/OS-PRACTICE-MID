@@ -1,0 +1,64 @@
+#include <stdio.h>
+#define pro struct Process
+
+pro {
+    int id;      
+    int at;
+    int bt;     
+    int left;   
+    int priority; 
+};
+
+int findHighestPriority(pro p[], int n, int ct) {
+    int ind = -1;
+    int minPriority = 10000;
+    for (int i = 0; i < n; i++) {
+        if (p[i].left > 0 && p[i].priority < minPriority && p[i].at <= ct) {
+            ind = i;
+            minPriority = p[i].priority;
+        }
+    }
+    return ind;
+}
+
+int main() {
+    int n;
+    printf("Enter number of processes: ");
+    scanf("%d", &n);
+    
+    pro p[n];
+
+    for (int i = 0; i < n; i++) {
+        p[i].id = i + 1;
+        printf("Enter burst time, arrival time and priority for process %d: ", p[i].id);
+        scanf("%d %d %d", &p[i].bt, &p[i].at, &p[i].priority);
+        p[i].left = p[i].bt;
+    }
+
+    int current = 0, completed = 0;
+    float avgTat = 0, avgWt = 0;
+
+    while (completed < n) {
+        int ind = findHighestPriority(p, n, current); 
+        if (ind != -1) {
+            current++;      
+            p[ind].left--;  
+            printf("P%d ", p[ind].id);
+            
+            if (p[ind].left == 0) {
+                completed++;     
+                int tat = current - p[ind].at; 
+                int wt = tat - p[ind].bt;     
+                avgTat += tat;
+                avgWt += wt;
+            }
+        } else {
+            current++;
+        }
+    }
+
+    printf("\nAverage Turnaround Time: %.2f", avgTat / n);
+    printf("\nAverage Waiting Time: %.2f", avgWt / n);
+
+    return 0;
+}
