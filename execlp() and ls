@@ -1,0 +1,40 @@
+#include<stdio.h>
+#include<stdlib.h>
+#include<unistd.h>
+#include<sys/wait.h>
+int main()
+{
+    pid_t pid1,pid2;
+    pid1 = fork();
+    if(pid1< 0) {
+        printf("Failed");
+        return 1;
+    }
+    else if(pid1== 0) {
+        printf("In child process \n");
+        printf("Child process : %d is listing files in the current directory \n",getpid());
+        execlp("/bin/ls", "ls", NULL);
+        exit(0);
+    }
+    else {
+        wait(NULL);
+        printf("Parent %d , first child completed \n",getpid());
+        
+        pid2 = fork();
+        if(pid2 < 0) {
+            printf("Fork failed \n");
+            return 1;
+        }
+        else if(pid2 == 0) {
+            printf("Second child : %d and Parent id : %d \n",getpid(),getppid());
+            sleep(10);
+            printf("Child process 2 : %d work done \n",getpid());
+            exit(0);
+        }
+        else {
+            printf("Parent id %d exiting now .",getpid());
+            exit(0);
+        }
+    }
+    return 0;
+}
