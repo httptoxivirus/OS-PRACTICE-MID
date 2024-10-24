@@ -1,0 +1,56 @@
+#include<stdio.h>
+#define pro struct Process
+pro {
+    int id;
+    int at;
+    int bt;
+    int left;
+};
+
+int findMin(pro p[], int n, int ct) {
+    int ind = -1;
+    int minTime = 10000;
+    for(int i=0; i<n; i++) {
+        if(p[i].left > 0 && p[i].left < minTime && p[i].at <= ct) {
+            ind = i;
+            minTime = p[i].left;
+        }
+    }
+    return ind;
+}
+
+int main() {
+    int n = 5;
+    pro p[5];
+    for (int i = 0; i < n; i++) {
+        p[i].id = i + 1;
+        printf("Enter burst time and arrival time for process %d: ", p[i].id);
+        scanf("%d %d", &p[i].bt, &p[i].at);
+    }
+    
+    for(int i=0; i<n; i++) {
+        p[i].left = p[i].bt;
+    }
+    
+    int current = 0, completed = 0;
+    float avgTat, avgWt;
+    while(completed < n) {
+        int ind = findMin(p,n,current);
+        if(ind != -1) {
+            current ++;
+            p[ind].left--;
+        
+            if(p[ind].left == 0) {
+                completed++;
+                int tat = current - p[ind].at;
+                int wt = tat - p[ind].bt;
+                avgTat += tat;
+                avgWt += wt;
+            }
+        }
+        
+        else current++;
+    }
+    printf("%f %f",avgTat/n,avgWt/n);
+    return 0;
+}
