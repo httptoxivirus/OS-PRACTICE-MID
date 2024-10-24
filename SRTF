@@ -39,6 +39,7 @@ int main() {
         if(ind != -1) {
             current ++;
             p[ind].left--;
+            printf("P%d ",ind+1);
         
             if(p[ind].left == 0) {
                 completed++;
